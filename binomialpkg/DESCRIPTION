@@ -1,0 +1,17 @@
+Package: binomialpkg
+Type: Package
+Title: Calculating probabilities of a Binomial random variable
+Version: 0.1.0
+Author: Lara Volski
+Maintainer: The package maintainer <lavolski@gmail.com>
+Description: This package implements functions for calculating probability of a Binomial random variable
+    Related calculations include the probability distribution, the expected value, variance, etc
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown

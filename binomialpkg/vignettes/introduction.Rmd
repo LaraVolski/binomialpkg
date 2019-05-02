@@ -1,0 +1,185 @@
+---
+title: "introduction"
+author: Lara Volski
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(binomialpkg)
+```
+
+# Binomial Package
+
+The package `"binomialpkg`" is a convenient way to  employ functions that enable you to calculate probabilities of a Binomial random variable. The package will help you calculate binomial distribution, and also includes other related calculations to help you with this endeavor. A total list of the included calculations are as follows:
+
+
+- mean
+
+- variance
+
+- mode
+
+- skewness
+
+- kurtosis
+
+- the number of combos in which *k* successes can occur in *n* trials
+
+- probability
+
+- distribution
+
+- cumulative
+
+The package also includes other helpful functions that can allow you to better visualize the calculations described above. I will document these functions in addition to the listed calculations.
+
+
+# Binomial Distribution
+The binomial distribution the most widely implemented probability model. It is credited to the mathematician [Jacob Bernoulli](https://en.wikipedia.org/wiki/Jacob_Bernoulli), who contributed to the field of probability in the 15th century. The binomial distribution uses the parameters *n* and *p* to display the discrete probability distribution of the number of successes in a series of *n* independent trials. An example of when the binomial distribution may be helpful would be if you are trying to find the probability of getting 2 tails in 5 tossses of a two-sided coin. The formula would look a little something like this:
+
+$$ \begin{align*} Pr(X = k) = (_k^n)p^k(1 - p)^{n-k} \end{align*}  $$ 
+
+
+# Before we begin...
+There are a few checks built into this package to ensure that your inputs are correct. Briefly, your *p* must always be a number between 0 and 1, your *n* must be a non-negative integer, and your *k* must be a vector of non-negative integer(s) that are less than or equal to *n*. If any of your inputs do not match this criteria, you will recieve a warning message. 
+
+# Binomialpkg Functions
+
+## bin_choose
+The main function `bin_choose()` calculates the number of combinations in which *k* successes can occurs in *n* trials. It is derived from the following equation:
+
+$$ \begin{align*} (_k^n) = \frac {n!}{k!(n - k)!}   \end{align*}  $$ 
+
+Let's demonstrate how this is performed in r
+```{r bin_choose}
+# First Example
+bin_choose(n = 5, k = 2)
+# Second Example
+bin_choose(5, 0)
+# Third Example
+bin_choose(5, 1:3)
+```
+In the first example, we see that there are 10 different ways to achieve 2 successes in 5 trials. This means that if you flip a coin 5 times and you want 2 tails, you could get it in the first two flips, the first and the third flip, and so on for a total of 10 combinations. It takes two arguments. The first argument is the number of trials, and the second argument is the number of desired successes. 
+
+## bin_probability
+The `bin_probability()` function builds on the previous function, and demonstrates the probability of getting *k* amount of successes in *n* trials if each individual trial has a *p* probability of success. It takes three arguments, the first being *k*, the second being *n*, and the final being *p*. 
+
+Let's demonstrate how this is performed in r
+```{r bin_probability}
+# Example 1
+bin_probability(k = 2, n = 5, p = 0.5)
+
+# Example 2
+bin_probability(0:2, 5, 0.5)
+
+# Example 3
+bin_probability(55, 100, 0.45)
+```
+
+## bin_distribution
+The bin distribution funtion takes in two arguments *n* and *p* and returns a data frame. This data frame will detail the probability of achieving any number of successes of your choice. Here is an example.
+
+```{r bin_distribution}
+bin_distribution(5, 0.5)
+```
+
+#### plot.bindis
+If you seek to graph the data frame showcased above, it would be accomplished like this. It takes two inputs, `n` or the number of trials, and `p` or the probability of success in any one trial.
+```{r plot.bindis}
+# Example 1
+dis1 <- bin_distribution(5, 0.5)
+barplot(dis1$probability, names.arg = dis1$success, xlab = "successes", ylab = "probability")
+
+```
+
+## bin_cumulative 
+This function is similar to `bin_distribuion` in that it takes two arguments *n* and *p* and returns a data frame. Likewise, this data frame will also detail the probability of achieving any number of successes of your choice. The difference is that there is a third column called cumulative, which demonstrates the cumulative prbability of success as the number of desired successes increases. 
+
+Here is an example in r
+```{r bin_cumulative}
+bin_cumulative(5, 0.5)
+```
+
+#### plot.bincum
+If you seek to plot the data table described above, you can use `plot()` and input your data frame generated from the table above.
+```{r plot.bincum}
+dis2 <- bin_cumulative(5, 0.5)
+plot(dis2)
+```
+
+## bin_variable
+The function `bin_variable()` likewise has two arguments `n` and `p`. You can use it to nicely print the parameters you have inputted. It always being with a title for 'Binomial variable' and then list your parameters by first the numer of trials and secondly the probability of success. In order to accomplish this, `bin_variable` relies on an output function called `print.binvar()`. 
+```{r bin_variable}
+bin_variable(5, 0.5)
+```
+#### summary.binvar
+In order to print a summary of all of the contents of your binomial distribution, you will want to be able to use this function. It takes two arguments, `n` for the number of trials and `p` for the probability of success within any one trial. It will print a `Summary Binomial` with the number of specified trials, the specified probability of success, and the mean, variance, mode, skewness, and kurtosis given these parameters. 
+```{r}
+# Example 1
+bin1 <- bin_variable(10, 0.3)
+binsum1 <- summary(bin1)
+binsum1
+```
+
+
+## Supporting Functions
+
+#### bin_mean
+The  function `bin_mean()` can be used to calculate the expected value or mean of a binomial distribution. It takes two arguments, `n` and `p` and returns the mean. It is derived from this function:
+
+$$ \begin{align*} n * p   \end{align*}  $$ 
+Using this function in r looks a little something like this
+```{r}
+bin_mean(10, 0.3)
+```
+
+
+#### bin_variance
+The function `bin_variance()` is used to discern the variance in your binomial distribution. It relies on this function
+$$ \begin{align*} np(1 - p)   \end{align*}  $$ 
+
+The function in r takes two inputs `n` and `p` and looks a like this:
+```{r}
+bin_variance(10, 0.3)
+```
+
+#### bin_mode
+
+The function `bin_mode()` is used to find the most likely number of success in *n* indpendent trials with probability *p* of success on each trial *m*, with the greater integer less than or equal to *np + p*. It relies on this function
+$$ \begin{align*} m = int(np + p)   \end{align*}  $$ 
+In r, it takes two inputs *n* and *p* and looks like this
+```{r}
+bin_mode(10, 0.3)
+```
+
+#### bin_skewness
+Skewness is a measure of the aymmetry of the binomial distribution of a random variable about its mean. It can be positive, negative, or undefined. You use this calculation:
+$$ \begin{align*} \frac {1 - 2p}{\sqrt{np(1 - p)}}    \end{align*}  $$ 
+It takes two arguments, *n* and *p*, and looks like this in r:
+
+```{r}
+bin_skewness(10, 0.3)
+```
+
+
+#### bin_kurtosis 
+Finally, `bin_kurtosis()` meausres the 'tailenness' of your binomial distribution. It is obtained from this formula
+$$ \begin{align*} \frac {1 - 6p(1 - p)}{np(1 - p)}    \end{align*}  $$ 
+
+In r, it takes two arguments, *n* and *p*, and looks like this
+```{r}
+bin_kurtosis(10, 0.3)
+```
+
